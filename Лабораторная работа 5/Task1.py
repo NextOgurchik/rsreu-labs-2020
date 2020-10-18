@@ -15,17 +15,25 @@ class Color:
             raise Exception('Числа должны быть в диапозоне от 0 до 255')
 
 class RGB:
-    """Изображение в RGB формате"""
+    """
+    Изображение в RGB формате\n
+    RGB(red, green, blue)\n
+    RGB(hexadecimal)\n
+    """
     Red = Color()
     Green = Color()
     Blue = Color()
 
-    def __init__(self, red = 0, green = 0, blue = 0):
-            self.Red = red
-            self.Green = green
-            self.Blue = blue
-    
-    cmyk_scale = 100
+    def __init__(self, *colors):
+        if len(colors) == 3: 
+            self.Red = colors[0]
+            self.Green = colors[1]
+            self.Blue = colors[2]   
+        elif len(colors) == 1:
+            self.Red = int(colors[0][1:3], 16)
+            self.Green = int(colors[0][3:5], 16)
+            self.Blue = int(colors[0][5:7], 16)
+                
 
     def tocmyk(self):
         """Перевод RBG в CMYK"""
@@ -40,7 +48,7 @@ class RGB:
         m = (m - min_cmy) / (1 - min_cmy)
         y = (y - min_cmy) / (1 - min_cmy)
         k = min_cmy
-        return f"({int(c * cmyk_scale)},{int(m * cmyk_scale)},{int(y * cmyk_scale)},{int(k * cmyk_scale)})"
+        return f"CMYK: ({int(c * cmyk_scale)},{int(m * cmyk_scale)},{int(y * cmyk_scale)},{int(k * cmyk_scale)})"
 
     def __add__(self, other):
         return RGB(self.Red + other.Red, self.Green + other.Green, self.Blue + other.Blue)
@@ -49,7 +57,7 @@ class RGB:
         return RGB(self.Red - other.Red, self.Green - other.Green, self.Blue - other.Blue)
 
     def __str__(self):
-        return f"({self.Red},{self.Green},{self.Blue})"
+        return f"RGB: ({self.Red},{self.Green},{self.Blue}) HEX: #{self.Red:02x}{self.Green:02x}{self.Blue:02x} {RGB.tocmyk(self)}"
 
     def __lt__(self, other):
         return math.sqrt(self.Red ** 2 + self.Green ** 2 + self.Blue ** 2) < math.sqrt(other.Red ** 2 + other.Green ** 2 + other.Blue ** 2)
@@ -69,7 +77,7 @@ class RGB:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-rgb = RGB(0,0,100)
+rgb = RGB("#24ab00")
 rgb2 = RGB(0,0,100)
 print(rgb)
 print(rgb2)
